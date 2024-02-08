@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .completed {
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col justify-center items-center">
+  <h1 class="text-3xl font-semibold mb-4">Task Manager</h1>
+  <div class="flex items-center mb-4">
+    <input type="text" id="taskInput" class="border border-gray-300 rounded-md p-2 mr-2" placeholder="Add a new task">
+    <button onclick="addTask()" class="bg-black text-white px-4 py-2 rounded-md">Add Task</button>
+  </div>
+  <ul id="taskList" class="w-full max-w-md bg-white rounded-md shadow-md p-4">
+    <!-- Tasks will be added here -->
+  </ul>
+  <button onclick="removeCompletedTasks()" class="mt-4 bg-black text-white px-4 py-2 rounded-md">Remove Completed Tasks</button>
+
+  <script>
+    let tasks = [];
+
+    function addTask() {
+      const taskInput = document.getElementById("taskInput");
+      const taskText = taskInput.value.trim();
+
+      if (taskText !== "") {
+        tasks.push({ text: taskText, completed: false });
+        taskInput.value = "";
+        renderTasks();
+      }
+    }
+
+    function toggleCompleted(index) {
+      tasks[index].completed = !tasks[index].completed;
+      renderTasks();
+    }
+
+    function removeCompletedTasks() {
+      tasks = tasks.filter(task => !task.completed);
+      renderTasks();
+    }
+
+    function renderTasks() {
+      const taskList = document.getElementById("taskList");
+      taskList.innerHTML = "";
+
+      tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
+        checkbox.addEventListener("change", () => toggleCompleted(index));
+
+        const textSpan = document.createElement("span");
+        textSpan.textContent = task.text;
+        if (task.completed) {
+          textSpan.classList.add("completed");
+        }
+
+        li.appendChild(checkbox);
+        li.appendChild(textSpan);
+        taskList.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
